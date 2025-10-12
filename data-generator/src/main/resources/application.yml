@@ -1,0 +1,31 @@
+spring:
+    application:
+        name: data-generator
+
+
+kafka:
+    bootstrap-servers: localhost:9094
+    topic:
+        crypto-prices: crypto-prices
+    producer:
+        acks: all
+        retries: 3
+        linger-ms: 5
+        batch-size: 16384
+        compression-type: lz4
+        client-id: crypto-price-producer
+
+feed:
+    means:
+        BTC: 1.0
+        ETH: 3.0
+        BNB: 5.0
+        XRP: 7.0
+        ADA: 10.0
+    base-prices:
+        BTC: 62000.0
+        ETH: 3000.0
+        BNB: 550.0
+        XRP: 0.55
+        ADA: 0.42
+    max-delay-multiplier: 10
