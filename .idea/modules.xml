@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/benchmark-apps/pooling/pooling-fe.iml" filepath="$PROJECT_DIR$/benchmark-apps/pooling/pooling-fe.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/praca-magisterska.iml" filepath="$PROJECT_DIR$/.idea/praca-magisterska.iml" />
     </modules>
   </component>
