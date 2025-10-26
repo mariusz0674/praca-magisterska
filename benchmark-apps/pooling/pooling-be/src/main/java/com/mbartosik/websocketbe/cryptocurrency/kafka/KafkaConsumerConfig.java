@@ -1,13 +1,10 @@
-package com.mbartosik.poolingbe.cryptocurrency.kafka;
+package com.mbartosik.websocketbe.cryptocurrency.kafka;
 
-import com.mbartosik.poolingbe.models.CryptoPriceEvent;
+import com.mbartosik.websocketbe.models.CryptoPriceEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -40,7 +37,7 @@ public class KafkaConsumerConfig {
 
         // delegat do JSON:
         cfg.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
-        cfg.put(JsonDeserializer.VALUE_DEFAULT_TYPE, com.mbartosik.poolingbe.models.CryptoPriceEvent.class.getName());
+        cfg.put(JsonDeserializer.VALUE_DEFAULT_TYPE, com.mbartosik.websocketbe.models.CryptoPriceEvent.class.getName());
         cfg.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
         cfg.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 

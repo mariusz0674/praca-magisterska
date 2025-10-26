@@ -1,11 +1,9 @@
-package com.mbartosik.poolingbe.cryptocurrency;
+package com.mbartosik.websocketbe.cryptocurrency;
 
 
-import com.mbartosik.poolingbe.cryptocurrency.store.PriceStore;
+import com.mbartosik.websocketbe.cryptocurrency.store.PriceStore;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

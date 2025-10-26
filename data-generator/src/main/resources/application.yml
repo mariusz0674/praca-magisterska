@@ -17,7 +17,7 @@ kafka:
 
 feed:
     means:
-        BTC: 1.0
+        BTC: 3.0
         ETH: 3.0
         BNB: 5.0
         XRP: 7.0

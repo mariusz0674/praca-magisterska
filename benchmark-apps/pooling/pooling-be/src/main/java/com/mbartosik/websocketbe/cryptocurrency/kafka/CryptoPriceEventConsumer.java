@@ -1,11 +1,9 @@
-package com.mbartosik.poolingbe.cryptocurrency.kafka;
+package com.mbartosik.websocketbe.cryptocurrency.kafka;
 
-import com.mbartosik.poolingbe.cryptocurrency.store.PriceStore;
-import com.mbartosik.poolingbe.models.CryptoPriceEvent;
+import com.mbartosik.websocketbe.cryptocurrency.store.PriceStore;
+import com.mbartosik.websocketbe.models.CryptoPriceEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 

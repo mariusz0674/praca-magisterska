@@ -1,4 +1,4 @@
-package com.mbartosik.poolingbe.cryptocurrency.store;
+package com.mbartosik.websocketbe.cryptocurrency.store;
 
 import org.springframework.stereotype.Component;
 

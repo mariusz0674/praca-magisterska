@@ -1,4 +1,4 @@
-package com.mbartosik.poolingbe.models;
+package com.mbartosik.websocketbe.models;
 
 public record CryptoPriceEvent(
         String symbol,

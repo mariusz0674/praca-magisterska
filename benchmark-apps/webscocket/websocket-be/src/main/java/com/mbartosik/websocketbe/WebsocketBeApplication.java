@@ -1,13 +1,13 @@
-package com.mbartosik.poolingbe;
+package com.mbartosik.websocketbe;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PoolingBeApplication {
+public class WebsocketBeApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PoolingBeApplication.class, args);
+        SpringApplication.run(WebsocketBeApplication.class, args);
     }
 
 }
