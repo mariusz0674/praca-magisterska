@@ -12,18 +12,7 @@ type PriceView = Price & { trend: Trend };
   selector: 'app-crypto-prices',
   standalone: true,
   imports: [AsyncPipe, NgForOf, NgIf, DecimalPipe, DatePipe, NgClass],
-  styles: [`
-    :host { display:block; max-width:960px; margin:24px auto; padding:0 16px; color:#e6eef8; }
-    h2 { margin:0 0 12px; font-size:20px; }
-    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:12px; }
-    .card { background:#121823; border:1px solid #1f2733; border-radius:12px; padding:12px 14px; min-height:86px; display:flex; flex-direction:column; justify-content:center; }
-    .symbol { font-weight:700; letter-spacing:0.5px; color:#9fb1c7; }
-    .price { font-size:22px; line-height:1.2; }
-    .up { color:#7dff9c; }
-    .down { color:#ff7d7d; }
-    .muted { color:#9fb1c7; font-size:12px; margin-top:6px; }
-    .empty { color:#9fb1c7; text-align:center; padding:24px; border:1px dashed #1f2733; border-radius:12px; }
-  `],
+  styleUrls: ['./crypto-prices.component.scss'],
   template: `
     <h2>Crypto Prices (HTTP polling)</h2>
 
@@ -46,10 +35,8 @@ type PriceView = Price & { trend: Trend };
 export class CryptoPricesComponent {
   private api = inject(CryptoApiService);
 
-  // surowe ceny z backendu
   private prices$: Observable<Price[]> = this.api.pollPrices(1000);
 
-  // ceny z obliczonym trendem (bez efektów ubocznych w template)
   pricesView$: Observable<PriceView[]> = this.prices$.pipe(
     scan((state: { prev: Map<string, number>; view: PriceView[] }, list: Price[]) => {
       const nextPrev = new Map(state.prev);
