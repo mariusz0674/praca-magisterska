@@ -1,0 +1,9 @@
+kafka:
+  consumer:
+    bootstrap-servers: localhost:9094
+    group-id: pooling-group
+    topic: crypto-prices
+    properties:
+      auto-offset-reset: earliest
+server:
+  port: 8073

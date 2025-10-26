@@ -3,6 +3,7 @@
   <component name="SonarLintProjectSettings">
     <option name="moduleMapping">
       <map>
+        <entry key="sse-be" value="pooling-be (1)" />
         <entry key="websocket-be" value="pooling-be (1)" />
       </map>
     </option>

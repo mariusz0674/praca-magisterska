@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/pooling-be/pom.xml" />
         <option value="$PROJECT_DIR$/benchmark-apps/pooling/pooling-be/pom.xml" />
         <option value="$PROJECT_DIR$/benchmark-apps/webscocket/websocket-be/pom.xml" />
+        <option value="$PROJECT_DIR$/benchmark-apps/sse/sse-be/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
