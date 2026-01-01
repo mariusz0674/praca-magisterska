@@ -1,10 +1,8 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {timer, Observable, BehaviorSubject} from 'rxjs';
-import { switchMap, map, catchError, shareReplay } from 'rxjs/operators';
+import {Observable, BehaviorSubject} from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import {Client, IMessage} from '@stomp/stompjs';
-
-export interface Price { symbol: string; price: number; }
+import { Price } from '../models/price';
 
 @Injectable({ providedIn: 'root' })
 export class CryptoApiService implements OnDestroy {
@@ -16,12 +14,12 @@ export class CryptoApiService implements OnDestroy {
     debug: () => {}
   });
 
-  private state$ = new BehaviorSubject<Map<string, number>>(new Map());
+  private state$ = new BehaviorSubject<Map<string, Price>>(new Map());
 
   prices$: Observable<Price[]> = this.state$.asObservable().pipe(
     map(mapState =>
-      Array.from(mapState.entries())
-        .map(([symbol, price]) => ({ symbol, price }))
+      Array.from(mapState.values())
+        .slice()
         .sort((a, b) => a.symbol.localeCompare(b.symbol))
     ),
     shareReplay({ bufferSize: 1, refCount: true })
@@ -31,9 +29,8 @@ export class CryptoApiService implements OnDestroy {
     this.client.onConnect = () => {
       this.client.subscribe('/api/crypto/prices', (msg: IMessage) => {
         const event = JSON.parse(msg.body) as Price;
-        // update stanu
         const next = new Map(this.state$.value);
-        next.set(event.symbol, event.price);
+        next.set(event.symbol, event);
         this.state$.next(next);
       });
     };
