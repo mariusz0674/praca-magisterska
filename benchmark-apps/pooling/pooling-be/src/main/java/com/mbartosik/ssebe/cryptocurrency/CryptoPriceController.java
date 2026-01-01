@@ -17,7 +17,7 @@ public class CryptoPriceController {
     private final PriceStore store;
 
     @GetMapping("/prices")
-    public Map<String, Double> getAll() {
+    public Map<String, PriceStore.PriceSnapshot> getAll() {
         return store.all();
     }
 

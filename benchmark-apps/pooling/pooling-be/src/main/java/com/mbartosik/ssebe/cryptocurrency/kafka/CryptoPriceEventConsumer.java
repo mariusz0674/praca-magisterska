@@ -20,6 +20,6 @@ public class CryptoPriceEventConsumer {
             containerFactory = "cryptoEventKafkaListenerContainerFactory" // albo usuń, jeśli używasz auto-config
     )
     public void consume(CryptoPriceEvent event) {
-        store.put(event.symbol(), event.price());
+        store.put(event.symbol(), event.price(), event.generatedAt());
     }
 }

@@ -22,7 +22,7 @@ type PriceView = Price & { trend: Trend; updated: Date };
         <div class="card" *ngFor="let p of prices; trackBy: trackBySymbol">
           <div class="symbol">{{ p.symbol }}</div>
           <div class="price" [ngClass]="p.trend">{{ p.price | number:'1.2-2' }}</div>
-          <div class="muted">updated {{ p.updated | date:'mediumTime' }}</div>
+          <div class="muted">updated {{ p.generatedAt | date:"HH:mm:ss.SSS" }}</div>
         </div>
       </div>
     </ng-container>

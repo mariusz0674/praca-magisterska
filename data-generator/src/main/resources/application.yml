@@ -2,7 +2,6 @@ spring:
     application:
         name: data-generator
 
-
 kafka:
     bootstrap-servers: localhost:9094
     topic:

@@ -1,10 +1,11 @@
 package com.mbartosik.datagenerator.producer.kafka;
 
-
 import com.mbartosik.datagenerator.models.CryptoPriceEvent;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 @Service
 public class CryptoPriceProducer {
@@ -20,7 +21,7 @@ public class CryptoPriceProducer {
 
     public SendResult<String, CryptoPriceEvent> sendSync(String symbol, double price) {
         try {
-            var event = new CryptoPriceEvent(symbol, price);
+            var event = new CryptoPriceEvent(symbol, price, Instant.now());
             return kafkaTemplate
                     .send(props.getTopic().getCryptoPrices(), symbol, event)
                     .get();

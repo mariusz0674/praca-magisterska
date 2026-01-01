@@ -16,9 +16,9 @@ class RandomWalkPriceModel {
     double next(String symbol) {
         double current = state.getOrDefault(symbol, 100.0);
         double sigmaPct = switch (symbol) {
-            case "BTC" -> 0.002; // 0.2%
-            case "ETH" -> 0.003; // 0.3%
-            default -> 0.005;    // 0.5%
+            case "BTC" -> 0.002;
+            case "ETH" -> 0.003;
+            default -> 0.005;
         };
         double stepPct = rnd.nextGaussian() * sigmaPct;
         double next = Math.max(0.0001, current * (1.0 + stepPct));

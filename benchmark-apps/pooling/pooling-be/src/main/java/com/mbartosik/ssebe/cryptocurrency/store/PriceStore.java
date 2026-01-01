@@ -2,18 +2,22 @@ package com.mbartosik.ssebe.cryptocurrency.store;
 
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class PriceStore {
-    private final ConcurrentHashMap<String, Double> latest = new ConcurrentHashMap<>();
 
-    public void put(String symbol, double price) {
-        latest.put(symbol, price);
+    public record PriceSnapshot(double price, Instant generatedAt) {}
+
+    private final ConcurrentHashMap<String, PriceSnapshot> latest = new ConcurrentHashMap<>();
+
+    public void put(String symbol, double price, Instant generatedAt) {
+        latest.put(symbol, new PriceSnapshot(price, generatedAt));
     }
 
-    public Map<String, Double> all() {
+    public Map<String, PriceSnapshot> all() {
         return Map.copyOf(latest);
     }
 

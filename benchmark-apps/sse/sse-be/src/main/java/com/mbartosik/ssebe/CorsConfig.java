@@ -9,8 +9,8 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("*") // lub "*" na szybko, ale nie w prod
-                .allowedMethods("GET")                   // wystarczy, bo robisz polling GET
+                .allowedOrigins("*")
+                .allowedMethods("GET")
                 .allowedHeaders("*")
                 .allowCredentials(false)
                 .maxAge(3600);
