@@ -1,19 +1,18 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, map, shareReplay } from 'rxjs';
-
-export interface Price { symbol: string; price: number; }
+import { Price } from '../models/price';
 
 @Injectable({ providedIn: 'root' })
 export class CryptoApiService implements OnDestroy {
   private readonly base = 'http://localhost:8073';
   private es?: EventSource;
 
-  private state$ = new BehaviorSubject<Map<string, number>>(new Map());
+  private state$ = new BehaviorSubject<Map<string, Price>>(new Map());
 
   prices$: Observable<Price[]> = this.state$.pipe(
     map(m =>
-      Array.from(m.entries())
-        .map(([symbol, price]) => ({ symbol, price }))
+      Array.from(m.values())
+        .slice()
         .sort((a, b) => a.symbol.localeCompare(b.symbol))
     ),
     shareReplay({ bufferSize: 1, refCount: true })
@@ -26,7 +25,7 @@ export class CryptoApiService implements OnDestroy {
       this.zone.run(() => {
         const evt = JSON.parse(e.data) as Price;
         const next = new Map(this.state$.value);
-        next.set(evt.symbol, evt.price);
+        next.set(evt.symbol, evt);
         this.state$.next(next);
       });
     });

@@ -3,10 +3,10 @@ import { AsyncPipe, DecimalPipe, DatePipe, NgClass, NgForOf, NgIf } from '@angul
 import { Observable } from 'rxjs';
 import { map, scan, shareReplay } from 'rxjs/operators';
 import { Price } from '../models/price';
-import {CryptoApiService} from '../services/crypto-api.service';
+import { CryptoApiService } from '../services/crypto-api.service';
 
 type Trend = '' | 'up' | 'down';
-type PriceView = Price & { trend: Trend; updated: Date };
+type PriceView = Price & { trend: Trend };
 
 @Component({
   selector: 'app-crypto-prices',
@@ -22,7 +22,7 @@ type PriceView = Price & { trend: Trend; updated: Date };
         <div class="card" *ngFor="let p of prices; trackBy: trackBySymbol">
           <div class="symbol">{{ p.symbol }}</div>
           <div class="price" [ngClass]="p.trend">{{ p.price | number:'1.2-2' }}</div>
-          <div class="muted">updated {{ p.generatedAt | date:"HH:mm:ss.SSS" }}</div>
+          <div class="muted">updated {{ p.generatedAt | date:"yyyy-MM-dd HH:mm:ss.SSS Z" }}</div>
         </div>
       </div>
     </ng-container>
@@ -39,34 +39,21 @@ export class CryptoPricesComponent {
 
   pricesView$: Observable<PriceView[]> = this.prices$.pipe(
     scan(
-      (state: {
-        prev: Map<string, number>;
-        updated: Map<string, Date>;
-        view: PriceView[];
-      }, list: Price[]) => {
+      (state: { prev: Map<string, number>; view: PriceView[] }, list: Price[]) => {
         const nextPrev = new Map(state.prev);
-        const nextUpdated = new Map(state.updated);
-        const now = new Date();
 
         const view = list.map((p): PriceView => {
           const prevPrice = state.prev.get(p.symbol);
-          const changed = prevPrice == null || p.price !== prevPrice;
-
           const trend: Trend =
             prevPrice == null ? '' : (p.price > prevPrice ? 'up' : (p.price < prevPrice ? 'down' : ''));
 
-          if (changed) {
-            nextUpdated.set(p.symbol, now);
-          }
-          const updated = nextUpdated.get(p.symbol) ?? now;
-
           nextPrev.set(p.symbol, p.price);
-          return { ...p, trend, updated };
+          return { ...p, trend };
         });
 
-        return { prev: nextPrev, updated: nextUpdated, view };
+        return { prev: nextPrev, view };
       },
-      { prev: new Map<string, number>(), updated: new Map<string, Date>(), view: [] as PriceView[] }
+      { prev: new Map<string, number>(), view: [] as PriceView[] }
     ),
     map(s => s.view),
     shareReplay({ bufferSize: 1, refCount: true })
