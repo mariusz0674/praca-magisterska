@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe, DecimalPipe, DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { Observable } from 'rxjs';
+import {Observable, takeUntil, timer} from 'rxjs';
 import { map, scan, shareReplay, tap } from 'rxjs/operators';
 import { Price } from '../models/price';
 import { CryptoApiService } from '../services/crypto-api.service';
@@ -51,10 +51,20 @@ export class CryptoPricesComponent {
   private lastSeenTimestamps = new Map<string, number>();
   // ------------------------
 
-  // Wpinamy się z pomiarem do strumienia SSE
+
+  public isStopped = false;
+
   private prices$: Observable<Price[]> = this.api.prices$.pipe(
-    tap(prices => this.measureLatencySmart(prices))
+    takeUntil(timer(10000)), // To wywoła return () => es.close() w serwisie
+    tap({
+      complete: () => this.isStopped = true
+    })
   );
+  // private prices$: Observable<Price[]> = this.api.prices$;
+  // // Wpinamy się z pomiarem do strumienia SSE
+  // private prices$: Observable<Price[]> = this.api.prices$.pipe(
+  //   tap(prices => this.measureLatencySmart(prices))
+  // );
 
   pricesView$: Observable<PriceView[]> = this.prices$.pipe(
     scan(

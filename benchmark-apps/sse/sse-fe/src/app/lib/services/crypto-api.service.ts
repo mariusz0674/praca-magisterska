@@ -1,41 +1,50 @@
-import { Injectable, NgZone, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, map, shareReplay } from 'rxjs';
+import { Injectable, NgZone } from '@angular/core';
+import { Observable, scan, map, shareReplay } from 'rxjs';
 import { Price } from '../models/price';
 
 @Injectable({ providedIn: 'root' })
-export class CryptoApiService implements OnDestroy {
-  private readonly base = 'http://localhost:8073';
-  private es?: EventSource;
+export class CryptoApiService {
+  private readonly base = 'http://localhost:8073'; // Upewnij się, że port jest dobry!
 
-  private state$ = new BehaviorSubject<Map<string, Price>>(new Map());
+  // Strumień, który otwiera połączenie przy subskrypcji i zamyka przy jej braku
+  prices$: Observable<Price[]> = new Observable<Price>((observer) => {
 
-  prices$: Observable<Price[]> = this.state$.pipe(
-    map(m =>
-      Array.from(m.values())
-        .slice()
-        .sort((a, b) => a.symbol.localeCompare(b.symbol))
-    ),
-    shareReplay({ bufferSize: 1, refCount: true })
-  );
+    // 1. Otwarcie połączenia (dopiero gdy ktoś zasubskrybuje)
+    const es = new EventSource(`${this.base}/api/crypto/prices`);
 
-  constructor(private zone: NgZone) {
-    this.es = new EventSource(`${this.base}/api/crypto/prices`);
-
-    this.es.addEventListener('price', (e: MessageEvent) => {
+    es.addEventListener('price', (e: MessageEvent) => {
       this.zone.run(() => {
-        const evt = JSON.parse(e.data) as Price;
-        const next = new Map(this.state$.value);
-        next.set(evt.symbol, evt);
-        this.state$.next(next);
+        try {
+          const evt = JSON.parse(e.data) as Price;
+          observer.next(evt);
+        } catch (err) {
+          observer.error(err);
+        }
       });
     });
 
-    this.es.onerror = (err) => {
-      console.error('[SSE] error', err);
+    es.onerror = (err) => {
+      // EventSource często rzuca błędem przy zamykaniu, można to ignorować lub logować
+      // observer.error(err);
+      console.log('SSE stream state:', es.readyState);
     };
-  }
 
-  ngOnDestroy(): void {
-    this.es?.close();
-  }
+    // 2. Funkcja czyszcząca (TEARDOWN) - wywoła się, gdy zrobisz unsubscribe/takeUntil
+    return () => {
+      console.log('Zamykanie połączenia SSE...');
+      es.close();
+    };
+  }).pipe(
+    // Agregacja pojedynczych eventów w tablicę (tak jak miałeś wcześniej)
+    scan((acc, curr) => {
+      acc.set(curr.symbol, curr);
+      return acc;
+    }, new Map<string, Price>()),
+    map(m => Array.from(m.values()).sort((a, b) => a.symbol.localeCompare(b.symbol))),
+
+    // refCount: true jest KLUCZOWE. Gdy liczba subskrybentów spadnie do 0, uruchomi się teardown (es.close)
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+  constructor(private zone: NgZone) {}
 }

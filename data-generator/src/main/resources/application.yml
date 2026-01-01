@@ -16,11 +16,11 @@ kafka:
 
 feed:
     means:
-        BTC: 3.0
-        ETH: 3.0
-        BNB: 5.0
-        XRP: 7.0
-        ADA: 10.0
+        BTC: 1.0
+        ETH: 1.0
+        BNB: 2.0
+        XRP: 5.0
+        ADA: 7.0
     base-prices:
         BTC: 62000.0
         ETH: 3000.0

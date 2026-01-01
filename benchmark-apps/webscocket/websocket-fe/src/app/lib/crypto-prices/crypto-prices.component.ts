@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe, DecimalPipe, DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { Observable } from 'rxjs';
+import {Observable, takeUntil, timer} from 'rxjs';
 import { map, scan, shareReplay, tap } from 'rxjs/operators';
 import { Price } from '../models/price';
 import { CryptoApiService } from '../services/crypto-api.service';
@@ -51,10 +51,21 @@ export class CryptoPricesComponent {
   private lastSeenTimestamps = new Map<string, number>();
   // ------------------------
 
-  // Wpinamy się z pomiarem do strumienia WebSocket
+  public isStopped = false;
+
   private prices$: Observable<Price[]> = this.api.prices$.pipe(
-    tap(prices => this.measureLatencySmart(prices))
+    takeUntil(timer(10000)), // Po 10s wywołuje client.deactivate() w serwisie
+    tap({
+      complete: () => this.isStopped = true
+    })
   );
+
+  // Wpinamy się z pomiarem do strumienia WebSocket
+  // private prices$: Observable<Price[]> = this.api.prices$;
+
+  // private prices$: Observable<Price[]> = this.api.prices$.pipe(
+  //   tap(prices => this.measureLatencySmart(prices))
+  // );
 
   pricesView$: Observable<PriceView[]> = this.prices$.pipe(
     scan(

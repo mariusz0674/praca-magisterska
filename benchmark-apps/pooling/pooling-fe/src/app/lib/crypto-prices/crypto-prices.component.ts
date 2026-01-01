@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe, DecimalPipe, DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { Observable } from 'rxjs';
+import {Observable, take} from 'rxjs';
 import { map, scan, shareReplay, tap } from 'rxjs/operators';
 import { Price } from '../models/price';
 import { CryptoApiService } from '../services/crypto-api.service';
@@ -52,10 +52,15 @@ export class CryptoPricesComponent {
   private lastSeenTimestamps = new Map<string, number>();
   // ------------------------
 
+
+  // private prices$: Observable<Price[]> = this.api.pollPrices(1000);
+
+  private prices$: Observable<Price[]> = this.api.pollPrices(1000).pipe(take(10));
+
   // Strumień z pomiarem w 'tap'
-  private prices$: Observable<Price[]> = this.api.pollPrices(1000).pipe(
-    tap(prices => this.measureLatencySmart(prices))
-  );
+  // private prices$: Observable<Price[]> = this.api.pollPrices(1000).pipe(
+  //   tap(prices => this.measureLatencySmart(prices))
+  // );
 
   pricesView$: Observable<PriceView[]> = this.prices$.pipe(
     scan((state: { prev: Map<string, number>; view: PriceView[] }, list: Price[]) => {
@@ -79,72 +84,72 @@ export class CryptoPricesComponent {
 
   // --- INTELIGENTNA METODA POMIAROWA ---
 
-  private measureLatencySmart(prices: Price[]): void {
-    if (!this.collectingData || prices.length === 0) return;
+  // private measureLatencySmart(prices: Price[]): void {
+  //   if (!this.collectingData || prices.length === 0) return;
+  //
+  //   const receiveTime = Date.now();
+  //   let sampleAdded = false;
+  //
+  //   // Iterujemy po wszystkich walutach w otrzymanej odpowiedzi
+  //   for (const p of prices) {
+  //     const genTime = new Date(p.generatedAt).getTime();
+  //     const lastKnownTime = this.lastSeenTimestamps.get(p.symbol) || 0;
+  //
+  //     // Logika: Mierzymy opóźnienie TYLKO jeśli ten konkretny rekord jest nowszy
+  //     // niż ten, który widzieliśmy poprzednio. To oznacza, że to jest "świeża" aktualizacja.
+  //     if (genTime > lastKnownTime) {
+  //
+  //       // Aktualizujemy wiedzę o ostatniej wersji
+  //       this.lastSeenTimestamps.set(p.symbol, genTime);
+  //
+  //       // Liczymy latency dla tej konkretnej aktualizacji
+  //       const latency = receiveTime - genTime;
+  //
+  //       // Walidacja poprawności (odrzucamy ujemne i anomalie > 60s)
+  //       if (latency >= 0 && latency < 60000) {
+  //         this.latencies.push(latency);
+  //         sampleAdded = true; // Zaznaczamy, że w tym requeście coś zmierzyliśmy
+  //       }
+  //     }
+  //   }
+  //
+  //   // Sprawdzamy warunek stopu
+  //   if (this.latencies.length >= this.MAX_SAMPLES) {
+  //     this.collectingData = false;
+  //     this.printStatistics();
+  //   }
+  // }
 
-    const receiveTime = Date.now();
-    let sampleAdded = false;
-
-    // Iterujemy po wszystkich walutach w otrzymanej odpowiedzi
-    for (const p of prices) {
-      const genTime = new Date(p.generatedAt).getTime();
-      const lastKnownTime = this.lastSeenTimestamps.get(p.symbol) || 0;
-
-      // Logika: Mierzymy opóźnienie TYLKO jeśli ten konkretny rekord jest nowszy
-      // niż ten, który widzieliśmy poprzednio. To oznacza, że to jest "świeża" aktualizacja.
-      if (genTime > lastKnownTime) {
-
-        // Aktualizujemy wiedzę o ostatniej wersji
-        this.lastSeenTimestamps.set(p.symbol, genTime);
-
-        // Liczymy latency dla tej konkretnej aktualizacji
-        const latency = receiveTime - genTime;
-
-        // Walidacja poprawności (odrzucamy ujemne i anomalie > 60s)
-        if (latency >= 0 && latency < 60000) {
-          this.latencies.push(latency);
-          sampleAdded = true; // Zaznaczamy, że w tym requeście coś zmierzyliśmy
-        }
-      }
-    }
-
-    // Sprawdzamy warunek stopu
-    if (this.latencies.length >= this.MAX_SAMPLES) {
-      this.collectingData = false;
-      this.printStatistics();
-    }
-  }
-
-  private printStatistics(): void {
-    // Kopiujemy tablicę i sortujemy
-    const sorted = [...this.latencies].sort((a, b) => a - b);
-
-    // Podstawowe statystyki
-    const min = sorted[0];
-    const max = sorted[sorted.length - 1];
-    const sum = sorted.reduce((a, b) => a + b, 0);
-    const avg = sum / sorted.length;
-
-    // Mediana
-    const mid = Math.floor(sorted.length / 2);
-    const median = sorted.length % 2 !== 0
-      ? sorted[mid]
-      : (sorted[mid - 1] + sorted[mid]) / 2;
-
-    // Odchylenie standardowe
-    const squareDiffs = this.latencies.map(value => Math.pow(value - avg, 2));
-    const avgSquareDiff = squareDiffs.reduce((a, b) => a + b, 0) / squareDiffs.length;
-    const stdDev = Math.sqrt(avgSquareDiff);
-
-    console.group('%c [WYNIKI BADAŃ - POLLING (SMART)] ', 'color: #2196F3; font-size: 14px; font-weight: bold;');
-    console.log(`Liczba próbek (N): ${this.latencies.length}`);
-    console.log(`Min Opóźnienie: ${min.toFixed(2)} ms`);
-    console.log(`Max Opóźnienie: ${max.toFixed(2)} ms`);
-    console.log(`Średnia (Avg): ${avg.toFixed(2)} ms`);
-    console.log(`Mediana: ${median.toFixed(2)} ms`);
-    console.log(`Odchylenie Std (σ): ${stdDev.toFixed(2)} ms`);
-    console.groupEnd();
-
-    alert(`Pomiary zakończone! Wyniki w konsoli.`);
-  }
+  // private printStatistics(): void {
+  //   // Kopiujemy tablicę i sortujemy
+  //   const sorted = [...this.latencies].sort((a, b) => a - b);
+  //
+  //   // Podstawowe statystyki
+  //   const min = sorted[0];
+  //   const max = sorted[sorted.length - 1];
+  //   const sum = sorted.reduce((a, b) => a + b, 0);
+  //   const avg = sum / sorted.length;
+  //
+  //   // Mediana
+  //   const mid = Math.floor(sorted.length / 2);
+  //   const median = sorted.length % 2 !== 0
+  //     ? sorted[mid]
+  //     : (sorted[mid - 1] + sorted[mid]) / 2;
+  //
+  //   // Odchylenie standardowe
+  //   const squareDiffs = this.latencies.map(value => Math.pow(value - avg, 2));
+  //   const avgSquareDiff = squareDiffs.reduce((a, b) => a + b, 0) / squareDiffs.length;
+  //   const stdDev = Math.sqrt(avgSquareDiff);
+  //
+  //   console.group('%c [WYNIKI BADAŃ - POLLING (SMART)] ', 'color: #2196F3; font-size: 14px; font-weight: bold;');
+  //   console.log(`Liczba próbek (N): ${this.latencies.length}`);
+  //   console.log(`Min Opóźnienie: ${min.toFixed(2)} ms`);
+  //   console.log(`Max Opóźnienie: ${max.toFixed(2)} ms`);
+  //   console.log(`Średnia (Avg): ${avg.toFixed(2)} ms`);
+  //   console.log(`Mediana: ${median.toFixed(2)} ms`);
+  //   console.log(`Odchylenie Std (σ): ${stdDev.toFixed(2)} ms`);
+  //   console.groupEnd();
+  //
+  //   alert(`Pomiary zakończone! Wyniki w konsoli.`);
+  // }
 }
