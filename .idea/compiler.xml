@@ -3,7 +3,7 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
-      <profile name="Annotation profile for data-generator" enabled="true">
+      <profile name="Annotation profile for websocket-be" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -12,10 +12,9 @@
           <entry name="$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-configuration-processor/3.5.6/spring-boot-configuration-processor-3.5.6.jar" />
         </processorPath>
         <module name="websocket-be" />
-        <module name="pooling-be" />
-        <module name="data-generator" />
+        <module name="sse-be" />
       </profile>
-      <profile name="Annotation profile for sse-be" enabled="true">
+      <profile name="Annotation profile for data-generator" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -25,7 +24,8 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-configuration-processor/3.5.6/spring-boot-configuration-processor-3.5.6.jar" />
         </processorPath>
-        <module name="sse-be" />
+        <module name="pooling-be" />
+        <module name="data-generator" />
       </profile>
     </annotationProcessing>
   </component>
