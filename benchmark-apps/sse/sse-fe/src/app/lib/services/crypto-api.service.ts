@@ -4,13 +4,12 @@ import { Price } from '../models/price';
 
 @Injectable({ providedIn: 'root' })
 export class CryptoApiService {
-  private readonly base = 'http://localhost:8073'; // Upewnij się, że port jest dobry!
 
   // Strumień, który otwiera połączenie przy subskrypcji i zamyka przy jej braku
   prices$: Observable<Price[]> = new Observable<Price>((observer) => {
 
     // 1. Otwarcie połączenia (dopiero gdy ktoś zasubskrybuje)
-    const es = new EventSource(`${this.base}/api/crypto/prices`);
+    const es = new EventSource(`/api/crypto/prices`);
 
     es.addEventListener('price', (e: MessageEvent) => {
       this.zone.run(() => {

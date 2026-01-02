@@ -5,6 +5,8 @@ services:
     image: apache/kafka:3.7.0
     container_name: kafka
     hostname: kafka
+    networks:
+      - pm-network
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
@@ -31,6 +33,8 @@ services:
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
+    networks:
+      - pm-network
     ports:
       - "8085:8080"
     environment:
@@ -40,5 +44,22 @@ services:
       kafka:
         condition: service_healthy
 
+  pm-generator:
+    container_name: pm-generator
+    build:
+      context: ./../../data-generator
+    networks:
+      - pm-network
+    environment:
+      SPRING_PROFILES_ACTIVE: "docker"
+    depends_on:
+      kafka:
+        condition: service_healthy
+
 volumes:
   kafka-data:
+
+networks:
+  pm-network:
+    name: pm-network
+    driver: bridge

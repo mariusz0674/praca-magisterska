@@ -55,7 +55,7 @@ export class CryptoPricesComponent {
 
   // private prices$: Observable<Price[]> = this.api.pollPrices(1000);
 
-  private prices$: Observable<Price[]> = this.api.pollPrices(1000).pipe(take(10));
+  private prices$: Observable<Price[]> = this.api.pollPrices(1000);
 
   // Strumień z pomiarem w 'tap'
   // private prices$: Observable<Price[]> = this.api.pollPrices(1000).pipe(

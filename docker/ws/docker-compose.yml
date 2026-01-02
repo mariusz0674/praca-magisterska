@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  pm-ws-be:
+    container_name: pm-ws-be
+    build:
+      context: ./../../benchmark-apps/webscocket/websocket-be
+    networks:
+      - pm-network
+    environment:
+      SPRING_PROFILES_ACTIVE: "docker"
+    ports:
+      - "8072:8080"
+
+  pm-ws-fe:
+    container_name: pm-ws-fe
+    build:
+      context: ./../../benchmark-apps/webscocket/websocket-fe
+    networks:
+      - pm-network
+    ports:
+      - "4202:80"
+
+networks:
+  pm-network:
+    external: true
+    name: pm-network

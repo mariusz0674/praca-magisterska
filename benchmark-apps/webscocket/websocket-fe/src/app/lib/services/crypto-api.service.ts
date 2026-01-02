@@ -5,8 +5,7 @@ import { Price } from '../models/price';
 
 @Injectable({ providedIn: 'root' })
 export class CryptoApiService {
-  private readonly brokerURL = 'ws://localhost:8072/ws'; // Sprawdź port!
-
+  private readonly brokerURL = 'ws';
   // Strumień on-demand: Otwiera WS przy subskrypcji, zamyka przy unsubscribe.
   prices$: Observable<Price[]> = new Observable<Price>((observer) => {
 

@@ -10,13 +10,11 @@ type PricesResponse = Record<string, PriceSnapshot>;
 
 @Injectable({ providedIn: 'root' })
 export class CryptoApiService {
-  private readonly base = 'http://localhost:8071';
-
   constructor(private http: HttpClient) {}
 
   pollPrices(intervalMs = 1000): Observable<Price[]> {
     return timer(0, intervalMs).pipe(
-      switchMap(() => this.http.get<PricesResponse>(`${this.base}/api/crypto/prices`)),
+      switchMap(() => this.http.get<PricesResponse>(`/api/crypto/prices`)),
       map(obj => Object.entries(obj || {})
         .map(([symbol, snap]) => ({ symbol, price: snap.price, generatedAt: snap.generatedAt }))
         .sort((a, b) => a.symbol.localeCompare(b.symbol))

@@ -1,0 +1,8 @@
+{
+  "/ws": {
+    "target": "ws://localhost:8072",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true
+  }
+}

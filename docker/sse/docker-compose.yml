@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  pm-sse-be:
+    container_name: pm-sse-be
+    build:
+      context: ./../../benchmark-apps/sse/sse-be
+    networks:
+      - pm-network
+    environment:
+      SPRING_PROFILES_ACTIVE: "docker"
+    ports:
+      - "8073:8080"
+
+  pm-sse-fe:
+    container_name: pm-sse-fe
+    build:
+      context: ./../../benchmark-apps/sse/sse-fe
+    networks:
+      - pm-network
+    ports:
+      - "4203:80"
+
+networks:
+  pm-network:
+    external: true
+    name: pm-network

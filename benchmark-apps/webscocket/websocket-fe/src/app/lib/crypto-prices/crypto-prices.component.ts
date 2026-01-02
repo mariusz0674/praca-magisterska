@@ -17,11 +17,11 @@ type PriceView = Price & { trend: Trend };
     <h2>Crypto Prices (WebSocket)</h2>
 
     <!-- Panel pomiarowy -->
-    <div *ngIf="collectingData" style="background: #e8f5e9; padding: 5px; margin-bottom: 10px; font-size: 0.8em; border-left: 4px solid #4CAF50;">
-      <strong>TRYB POMIAROWY (WebSocket):</strong> Próbka {{ latencies.length }} / {{ MAX_SAMPLES }}
-      <br>
-      <small>Mierzę opóźnienie End-to-End dla protokołu STOMP/WS.</small>
-    </div>
+<!--    <div *ngIf="collectingData" style="background: #e8f5e9; padding: 5px; margin-bottom: 10px; font-size: 0.8em; border-left: 4px solid #4CAF50;">-->
+<!--      <strong>TRYB POMIAROWY (WebSocket):</strong> Próbka {{ latencies.length }} / {{ MAX_SAMPLES }}-->
+<!--      <br>-->
+<!--      <small>Mierzę opóźnienie End-to-End dla protokołu STOMP/WS.</small>-->
+<!--    </div>-->
 
     <ng-container *ngIf="pricesView$ | async as prices; else loading">
       <div *ngIf="prices.length === 0" class="empty">No data</div>
@@ -52,13 +52,14 @@ export class CryptoPricesComponent {
   // ------------------------
 
   public isStopped = false;
+  private prices$: Observable<Price[]> = this.api.prices$;
 
-  private prices$: Observable<Price[]> = this.api.prices$.pipe(
-    takeUntil(timer(10000)), // Po 10s wywołuje client.deactivate() w serwisie
-    tap({
-      complete: () => this.isStopped = true
-    })
-  );
+  // private prices$: Observable<Price[]> = this.api.prices$.pipe(
+  //   takeUntil(timer(10000)), // Po 10s wywołuje client.deactivate() w serwisie
+  //   tap({
+  //     complete: () => this.isStopped = true
+  //   })
+  // );
 
   // Wpinamy się z pomiarem do strumienia WebSocket
   // private prices$: Observable<Price[]> = this.api.prices$;
